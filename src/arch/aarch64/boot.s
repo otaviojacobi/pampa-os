@@ -33,7 +33,45 @@ _lower_el:
     LDR x1, =__stack_top    // SP_EL1: the stack EL1 will use
     MSR SP_EL1, x1
 
+    LDR x1, =vector_table   // VBAR_EL1: base of the EL1 exception vector table
+    MSR VBAR_EL1, x1
+
     ERET                    // PC ← ELR_EL2, PSTATE ← SPSR_EL2 → now at EL1, in start_kernel
 _loop_other_core:
     WFE
     B _loop_other_core
+
+// ---------------------------------------------------------------------------
+// EL1 exception vector table. Reached ONLY by the hardware, which jumps to
+// VBAR_EL1 + (fixed offset) on an exception — never fallen into from above.
+// 16 slots x 128 bytes = 2 KiB; the table base must be 2 KiB-aligned.
+// ---------------------------------------------------------------------------
+.section ".text.vectors"
+
+// one slot: push to its 128-byte boundary, then branch to a handler
+.macro VEC_ENTRY handler
+    .balign 0x80
+    b   \handler
+.endm
+
+.balign 0x800               // VBAR_EL1 requires the table 2 KiB-aligned
+vector_table:
+    VEC_ENTRY _exc_hang     // 0x000  Sync   | Current EL, SP_EL0
+    VEC_ENTRY _exc_hang     // 0x080  IRQ
+    VEC_ENTRY _exc_hang     // 0x100  FIQ
+    VEC_ENTRY _exc_hang     // 0x180  SError
+    VEC_ENTRY _exc_hang     // 0x200  Sync   | Current EL, SP_ELx  <- our faults land here
+    VEC_ENTRY _exc_hang     // 0x280  IRQ
+    VEC_ENTRY _exc_hang     // 0x300  FIQ
+    VEC_ENTRY _exc_hang     // 0x380  SError
+    VEC_ENTRY _exc_hang     // 0x400  Sync   | Lower EL, AArch64
+    VEC_ENTRY _exc_hang     // 0x480  IRQ
+    VEC_ENTRY _exc_hang     // 0x500  FIQ
+    VEC_ENTRY _exc_hang     // 0x580  SError
+    VEC_ENTRY _exc_hang     // 0x600  Sync   | Lower EL, AArch32
+    VEC_ENTRY _exc_hang     // 0x680  IRQ
+    VEC_ENTRY _exc_hang     // 0x700  FIQ
+    VEC_ENTRY _exc_hang     // 0x780  SError
+
+_exc_hang:
+    b   _exc_hang           // catch-all: stop here instead of running into garbage
