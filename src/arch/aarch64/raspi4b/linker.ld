@@ -2,6 +2,7 @@ ENTRY(_start)
 SECTIONS
 {
   . = 0x80000;
+  __stack_top = .;
   .text : {
       KEEP(*(.text._start))
       *(.text .text.*)
