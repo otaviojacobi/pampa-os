@@ -56,22 +56,19 @@ _loop_other_core:
 
 .balign 0x800               // VBAR_EL1 requires the table 2 KiB-aligned
 vector_table:
-    VEC_ENTRY _exc_hang     // 0x000  Sync   | Current EL, SP_EL0
-    VEC_ENTRY _exc_hang     // 0x080  IRQ
-    VEC_ENTRY _exc_hang     // 0x100  FIQ
-    VEC_ENTRY _exc_hang     // 0x180  SError
-    VEC_ENTRY _exc_hang     // 0x200  Sync   | Current EL, SP_ELx  <- our faults land here
-    VEC_ENTRY _exc_hang     // 0x280  IRQ
-    VEC_ENTRY _exc_hang     // 0x300  FIQ
-    VEC_ENTRY _exc_hang     // 0x380  SError
-    VEC_ENTRY _exc_hang     // 0x400  Sync   | Lower EL, AArch64
-    VEC_ENTRY _exc_hang     // 0x480  IRQ
-    VEC_ENTRY _exc_hang     // 0x500  FIQ
-    VEC_ENTRY _exc_hang     // 0x580  SError
-    VEC_ENTRY _exc_hang     // 0x600  Sync   | Lower EL, AArch32
-    VEC_ENTRY _exc_hang     // 0x680  IRQ
-    VEC_ENTRY _exc_hang     // 0x700  FIQ
-    VEC_ENTRY _exc_hang     // 0x780  SError
-
-_exc_hang:
-    b   _exc_hang           // catch-all: stop here instead of running into garbage
+    VEC_ENTRY handle_cpu_exception     // 0x000  Sync   | Current EL, SP_EL0
+    VEC_ENTRY handle_cpu_exception     // 0x080  IRQ
+    VEC_ENTRY handle_cpu_exception     // 0x100  FIQ
+    VEC_ENTRY handle_cpu_exception     // 0x180  SError
+    VEC_ENTRY handle_cpu_exception     // 0x200  Sync   | Current EL, SP_ELx  <- our faults land here
+    VEC_ENTRY handle_cpu_exception     // 0x280  IRQ
+    VEC_ENTRY handle_cpu_exception     // 0x300  FIQ
+    VEC_ENTRY handle_cpu_exception     // 0x380  SError
+    VEC_ENTRY handle_cpu_exception     // 0x400  Sync   | Lower EL, AArch64
+    VEC_ENTRY handle_cpu_exception     // 0x480  IRQ
+    VEC_ENTRY handle_cpu_exception     // 0x500  FIQ
+    VEC_ENTRY handle_cpu_exception     // 0x580  SError
+    VEC_ENTRY handle_cpu_exception     // 0x600  Sync   | Lower EL, AArch32
+    VEC_ENTRY handle_cpu_exception     // 0x680  IRQ
+    VEC_ENTRY handle_cpu_exception     // 0x700  FIQ
+    VEC_ENTRY handle_cpu_exception     // 0x780  SError
