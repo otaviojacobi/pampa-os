@@ -6,7 +6,13 @@ _start:
     CBNZ x1, _loop_other_core
     LDR x1, =__stack_top
     MOV sp, x1
-    B start_kernel
+    LDR x1, =__bss_start
+    LDR x2, =__bss_end
+_zero_bss:
+    CMP x1, x2
+    B.HS start_kernel
+    STR xzr, [x1], #8
+    B _zero_bss
 _loop_other_core:
     WFE
     B _loop_other_core
