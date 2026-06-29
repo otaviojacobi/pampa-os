@@ -33,7 +33,7 @@ if [[ ! -f firmware/overlays/disable-bt.dtbo ]]; then
     curl -fL https://raw.githubusercontent.com/raspberrypi/firmware/master/boot/overlays/disable-bt.dtbo -o firmware/overlays/disable-bt.dtbo
 fi
 
-cargo objcopy --release -- -O binary kernel8.img
+PAMPA_BOARD=aarch64/raspi4b cargo objcopy --release -- -O binary kernel8.img
 echo "Built kernel8.img"
 
 # Usage: ./build.sh /media/otavio/PAMPAOS
