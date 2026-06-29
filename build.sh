@@ -21,7 +21,7 @@ enable_uart=1
 EOF
 fi
 
-cargo objcopy --release -- -O binary kernel8.img
+PAMPA_BOARD=aarch64/raspi4b cargo objcopy --release -- -O binary kernel8.img
 echo "Built kernel8.img"
 
 # Usage: ./build.sh /media/otavio/PAMPAOS
