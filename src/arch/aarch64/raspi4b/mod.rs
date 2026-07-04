@@ -1,13 +1,4 @@
-pub enum MemoryType {
-    Normal,  // real cacheable memory
-    Device,  // peripherals
-}
-
-pub struct Region {
-    pub base: usize,
-    pub size: usize,
-    pub kind: MemoryType,
-}
+use crate::mm::{MemoryType, Region};
 
 pub const MEMORY_MAP: &[Region] = &[
     Region { base: 0x0000_0000, size: 0x4000_0000, kind: MemoryType::Normal },

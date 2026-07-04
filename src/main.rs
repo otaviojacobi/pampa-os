@@ -8,7 +8,9 @@ use crate::drivers::uart::Uart;
 
 global_asm!(include_str!(env!("PAMPA_BOOT_ASM")));
 
+mod arch;
 mod drivers;
+mod mm;
 
 #[unsafe(no_mangle)]
 pub extern "C" fn start_kernel() -> ! {
