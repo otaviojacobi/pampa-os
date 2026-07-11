@@ -18,7 +18,19 @@ if [[ ! -f firmware/config.txt ]]; then
 arm_64bit=1
 kernel=kernel8.img
 enable_uart=1
+dtoverlay=disable-bt
 EOF
+fi
+
+if [[ ! -f firmware/bcm2711-rpi-4-b.dtb ]]; then
+    echo "Downloading bcm2711-rpi-4-b.dtb ..."
+    curl -fL https://raw.githubusercontent.com/raspberrypi/firmware/master/boot/bcm2711-rpi-4-b.dtb -o firmware/bcm2711-rpi-4-b.dtb
+fi
+
+if [[ ! -f firmware/overlays/disable-bt.dtbo ]]; then
+    echo "Downloading overlays/disable-bt.dtbo ..."
+    mkdir -p firmware/overlays
+    curl -fL https://raw.githubusercontent.com/raspberrypi/firmware/master/boot/overlays/disable-bt.dtbo -o firmware/overlays/disable-bt.dtbo
 fi
 
 cargo objcopy --release -- -O binary kernel8.img
@@ -26,7 +38,9 @@ echo "Built kernel8.img"
 
 # Usage: ./build.sh /media/otavio/PAMPAOS
 if [[ -n "${1:-}" ]]; then
-    cp firmware/start4.elf firmware/fixup4.dat firmware/config.txt kernel8.img "$1/"
+    cp firmware/start4.elf firmware/fixup4.dat firmware/config.txt firmware/bcm2711-rpi-4-b.dtb kernel8.img "$1/"
+    mkdir -p "$1/overlays"
+    cp firmware/overlays/disable-bt.dtbo "$1/overlays/"
     sync
     echo "Copied all boot files to $1 and synced."
 fi
